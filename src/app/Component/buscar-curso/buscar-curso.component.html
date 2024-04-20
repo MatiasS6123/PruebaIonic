@@ -15,36 +15,43 @@
     </ion-item>
     
     <form [formGroup]="cursoForm" *ngIf="mostrarInformacionCurso">
-      <label for="nombreCurso">Nombre del Curso</label>
-      <input type="text" id="nombreCurso" formControlName="nombreCurso" [disabled]="!edicionHabilitada" required>
-  
-      <label for="cantidadAlumno">Cantidad de Alumnos</label>
-      <input type="number" id="cantidadAlumno" formControlName="cantidadAlumno" required>
-  
-      <label for="nombreProfesor">Nombre del Profesor</label>
-      <input type="text" id="nombreProfesor" formControlName="nombreProfesor" required>
+      <ion-item>
+        <ion-label position="stacked">Nombre del Curso</ion-label>
+        <ion-input type="text" formControlName="nombreCurso" [disabled]="!edicionHabilitada" required></ion-input>
+      </ion-item>
   
       <ion-item>
-        <ion-label>Días</ion-label>
+        <ion-label position="stacked">Cantidad de Alumnos</ion-label>
+        <ion-input type="number" formControlName="cantidadAlumno" [disabled]="!edicionHabilitada" required></ion-input>
+      </ion-item>
+  
+      <ion-item>
+        <ion-label>Nombre Profesor</ion-label>
+        <ion-select  formControlName="nombreProfesor">
+          <ion-select-option *ngFor="let profesor of profesores" [value]="profesor">{{ profesor.nombre }} {{profesor.rut}}</ion-select-option>
+        </ion-select>
+      </ion-item>
+  
+                  
+      <ion-item>
+        <ion-label position="stacked">Días</ion-label>
         <ion-select [disabled]="!edicionHabilitada" multiple="true" formControlName="dias">
           <ion-select-option *ngFor="let dia of dias" [value]="dia">{{ dia }}</ion-select-option>
         </ion-select>
       </ion-item>
-
+  
       <ion-item>
-        <ion-label>Alumnos</ion-label>
+        <ion-label position="stacked">Alumnos</ion-label>
         <ion-select formControlName="alumnos" multiple="true" interface="action-sheet">
           <ion-select-option *ngFor="let nombre of nombresEstudiantes" [value]="nombre">{{ nombre }}</ion-select-option>
         </ion-select>
       </ion-item>
-            
-
+  
       <div class="button-container">
         <ion-button color="primary" (click)="habilitarEdicion()" *ngIf="!edicionHabilitada">Modificar</ion-button>
         <ion-button color="danger" (click)="eliminarCurso()" class="action-button" *ngIf="edicionHabilitada">Eliminar</ion-button>
         <ion-button color="secondary" (click)="actualizarCurso()" class="action-button" *ngIf="edicionHabilitada">Guardar Cambios</ion-button>
       </div>
-
     </form>
   </ion-toolbar>
 </ion-header>

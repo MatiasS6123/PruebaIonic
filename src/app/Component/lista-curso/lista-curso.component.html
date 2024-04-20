@@ -1,0 +1,9 @@
+<ion-list *ngIf="cursos.length > 0">
+  <ion-item *ngFor="let curso of cursos">
+    <!-- Agrega aquí los campos para mostrar la información del curso -->
+    <ion-label></ion-label>
+    <!-- Ejemplo: <ion-label>{{ curso.nombre }}</ion-label> -->
+  </ion-item>
+</ion-list>
+
+<ion-note *ngIf="cursos.length === 0">Usted no tiene cursos asignados</ion-note>

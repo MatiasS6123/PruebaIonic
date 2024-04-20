@@ -12,10 +12,11 @@ import { ListaUsuarioComponent } from './lista-usuario/lista-usuario.component';
 import { BuscarCursoComponent } from './buscar-curso/buscar-curso.component';
 import { BitacoraComponent } from './bitacora/bitacora.component';
 import { GestionNotaComponent } from './gestion-nota/gestion-nota.component';
+import { ListaCursoComponent } from './lista-curso/lista-curso.component';
 
 @NgModule({
   declarations: [RegistroComponent,LoginComponent,ListaEstudianteComponent,GestionUsuarioComponent,ListEstudentComponent,ListaUsuarioComponent,
-  BuscarCursoComponent,BitacoraComponent,GestionNotaComponent],
+  BuscarCursoComponent,BitacoraComponent,GestionNotaComponent,ListaCursoComponent],
   imports: [
     CommonModule,
     IonicModule, // Importa IonicModule

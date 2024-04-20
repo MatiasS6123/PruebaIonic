@@ -10,6 +10,7 @@ import { ListaUsuarioComponent } from './Component/lista-usuario/lista-usuario.c
 import { BuscarCursoComponent } from './Component/buscar-curso/buscar-curso.component';
 import { BitacoraComponent } from './Component/bitacora/bitacora.component';
 import { GestionNotaComponent } from './Component/gestion-nota/gestion-nota.component';
+import { ListaCursoComponent } from './Component/lista-curso/lista-curso.component';
 
 const routes: Routes = [
   {
@@ -74,6 +75,10 @@ const routes: Routes = [
   {
     path:'gestion-nota',
     component:GestionNotaComponent
+  },
+  {
+    path:'lista-curso',
+    component:ListaCursoComponent
   }
 
 ];

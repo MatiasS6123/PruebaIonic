@@ -1,14 +1,16 @@
 const express = require('express');
 const router = express.Router();
 const GestionCurso= require('../../models/gestionCModels')
+const User = require('../../models/userModel');
 
 router.post('/', async (req, res) => {
-    const { nombreCurso, cantidadAlumno, nombreProfesor, dias,alumno } = req.body;
+    const { nombreCurso, cantidadAlumno, nombreProfesor,rutProfesor, dias,alumno } = req.body;
 
     const nuevagestionCurso = new GestionCurso({
         nombreCurso: nombreCurso,
         cantidadAlumno: cantidadAlumno,
         nombreProfesor: nombreProfesor,
+        rutProfesor:rutProfesor,
         dias: dias,
         alumno:alumno
     });
@@ -80,6 +82,32 @@ router.get('/:nombreCurso', async (req, res) => {
     } catch (error) {
         console.error('Error al obtener curso por nombre:', error); // Agregar log
         res.status(500).json({ message: error.message });
+    }
+});
+router.get('/:rutProfesor/cursos', async (req, res) => {
+    try {
+        const rutProfesor = req.params.rutProfesor;
+        console.log('Nombre del usuario:', rutProfesor); // Agregar log aquí
+        // Buscar al profesor por su rut en la colección de usuarios
+        const profesor = await User.findOne({ rut: rutProfesor });
+        console.log('Información del usuario:', profesor); // Agregar log aquí
+        if (!profesor) {
+            console.log('Profesor no encontrado'); // Agregar log aquí
+            return res.status(404).json({ message: 'Profesor no encontrado' });
+        }
+        // Buscar cursos asignados al profesor por su rut en la colección de cursos
+        const cursos = await GestionCurso.find({ rutProfesor: rutProfesor });
+        console.log('Cursos encontrados:', cursos); // Agregar log aquí
+
+        if (cursos.length === 0) {
+            console.log('No se encontraron cursos asignados para este profesor'); // Agregar log aquí
+            return res.status(404).json({ message: 'Usted no tiene cursos asignados' });
+        }
+
+        res.json(cursos);
+    } catch (err) {
+        console.error('Error:', err); // Agregar log aquí
+        res.status(500).json({ message: err.message });
     }
 });
 

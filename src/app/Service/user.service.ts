@@ -28,6 +28,7 @@ export class UserService {
   getUser(): Observable<User[]> {
     return this.http.get<User[]>(this.baseUrl);
   }
+  
 
   login(email: string, password: string): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}/login`, { email, password });
@@ -57,7 +58,7 @@ export class UserService {
     // Verifica si el usuario actualmente autenticado es administrador
     return this.getUserInfo().pipe(
       map(user => {
-        console.log('Tipo de usuario:', user.tipo_usuario);
+        console.log('Tipo de usuario:', user.tipo_usuario );
         const isAdmin = user.tipo_usuario === 'administrador';
         console.log('¿Es administrador?', isAdmin);
         return isAdmin;
@@ -90,5 +91,11 @@ export class UserService {
         }
       })
     );
+  }
+
+  
+  getProfesores(): Observable<User[]> {
+    const url = `${this.baseUrl}/profesores`;
+    return this.http.get<User[]>(url);
   }
 }

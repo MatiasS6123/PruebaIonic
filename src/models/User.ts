@@ -1,4 +1,5 @@
 export interface User {
+    _id:string;
     rut: string;
     nombre: string;
     apellido: string;

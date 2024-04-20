@@ -37,7 +37,7 @@ router.post('/', async (req, res) => {
 });
 
 function generateAuthToken(user) {
-    return jwt.sign({ userId: user._id }, 'tu_clave_secreta', { expiresIn: '1h' }); // Definir tiempo de expiración del nuevo token (por ejemplo, 1 hora)
+    return jwt.sign({ userId: user._id }, 'tu_clave_secreta'); // Definir tiempo de expiración del nuevo token (por ejemplo, 1 hora)
 }
 
 // Middleware para verificar el token de autenticación
@@ -164,18 +164,26 @@ router.delete('/:rut', async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 });
-router.get('/:rut', async (req, res) => {
+
+
+router.get('/profesores', async (req, res) => {
     try {
-        console.log('RUT recibido:', req.params.rut); // Agregar log para imprimir el RUT recibido
-        const user = await User.findOne({ rut: req.params.rut }).lean(false);
-        if (!user) {
-            return res.status(404).json({ message: 'usuario no encontrado' });
-        }
-        console.log('usuario encontrado:', user); // Agregar log
-        res.json(user);
-    } catch (error) {
-        console.error('Error al obtener usuario por RUT:', error); // Agregar log
-        res.status(500).json({ message: error.message });
+      // Registra un log de inicio de la consulta
+      console.log('Consultando profesores...');
+      
+      const profesores = await User.find({ tipo_usuario: 'profesor' });
+  
+      // Registra un log si se encontraron profesores
+      console.log('Profesores encontrados:', profesores);
+      
+      res.json(profesores);
+    } catch (err) {
+      // Registra un log si ocurre un error durante la consulta
+      console.error('Error al obtener los profesores:', err);
+      
+      res.status(500).json({ message: 'Error al obtener los profesores' });
     }
-});
+  });
+
 module.exports = router;
+

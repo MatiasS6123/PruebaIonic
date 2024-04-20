@@ -21,8 +21,13 @@
     <label for="cantidadAlumno">Cantidad de Alumnos</label>
     <input type="number" id="cantidadAlumno" formControlName="cantidadAlumno" required>
   
-    <label for="nombreProfesor">Nombre del Profesor</label>
-    <input type="text" id="nombreProfesor" formControlName="nombreProfesor" required>
+    <ion-item>
+      <ion-label>Nombre Profesor</ion-label>
+      <ion-select  formControlName="nombreProfesor">
+        <ion-select-option *ngFor="let profesor of profesores" [value]="profesor">{{ profesor.nombre }} {{profesor.rut}}</ion-select-option>
+      </ion-select>
+    </ion-item>
+
   
     <ion-item>
       <ion-label>Días</ion-label>

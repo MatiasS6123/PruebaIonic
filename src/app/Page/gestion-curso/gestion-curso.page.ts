@@ -3,7 +3,9 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastController } from '@ionic/angular';
 import { EstudianteService } from 'src/app/Service/estudiante.service';
 import { GestionCService } from 'src/app/Service/gestion-c.service';
+import { UserService } from 'src/app/Service/user.service';
 import { Estudiante } from 'src/models/Estudiante';
+import { User } from 'src/models/User';
 import { GestionCurso } from 'src/models/gestionC';
 
 @Component({
@@ -17,12 +19,16 @@ export class GestionCursoPage implements OnInit {
   dias: string[] = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'];
   alumnos: string[] = [];
 
+  profesores: User[] = [];
+
+
   constructor(private formBuilder: FormBuilder,private GestionCservice:GestionCService, private toastControler:ToastController,
-    private estudianteService:EstudianteService) { 
+    private estudianteService:EstudianteService,private userService:UserService) { 
     this.gestionCursoForm = this.formBuilder.group({
       nombreCurso: ['', Validators.required],
       cantidadAlumno: ['', Validators.required],
       nombreProfesor: ['', Validators.required],
+     
       dias: [[],Validators.required],
       alumno:[[],Validators.required]
     });
@@ -30,6 +36,7 @@ export class GestionCursoPage implements OnInit {
 
   ngOnInit(): void {
     this.obtenerNombresEstudiantes();
+    this.obtenerProfesor();
   }
 
   onSubmit() {
@@ -39,24 +46,37 @@ export class GestionCursoPage implements OnInit {
 
   guardarCurso(): void {
     if (this.gestionCursoForm.valid) {
-      const curso: GestionCurso = this.gestionCursoForm.value;
+      console.log('Formulario válido. Guardando curso...');
+      const formData = this.gestionCursoForm.value; // Obtener todos los datos del formulario
+  
+      // Crear un objeto curso que contenga todos los datos del formulario
+      const curso: GestionCurso = {
+        nombreCurso: formData.nombreCurso,
+        cantidadAlumno: formData.cantidadAlumno,
+        nombreProfesor: formData.nombreProfesor.nombre,
+        rutProfesor: formData.nombreProfesor.rut,
+        dias: formData.dias,
+        alumno: formData.alumno
+      };
+  
       this.GestionCservice.asignarCurso(curso).subscribe(
-        response => {
-          // Manejar la respuesta del servidor si es necesario
+        () => {
           this.presentToast("Curso asignado correctamente");
+          console.log('Curso guardado correctamente.');
           this.gestionCursoForm.reset();
         },
-        error => {
-          // Manejar el error si la solicitud falla
+        (error) => {
           console.error('Error al guardar el curso:', error);
+          this.presentToast("Error al guardar el curso");
         }
       );
     } else {
-      // El formulario no es válido, puedes mostrar un mensaje de error o hacer algo más
       console.error('El formulario no es válido');
+      this.presentToast("El formulario no es válido");
     }
   }
-
+  
+  
   obtenerNombresEstudiantes() {
     this.estudianteService.getEstudiantes().subscribe(
       (estudiantes: Estudiante[]) => {
@@ -67,6 +87,16 @@ export class GestionCursoPage implements OnInit {
       }
     );
   }
+
+  obtenerProfesor(){
+    this.userService.getProfesores().subscribe(
+      (profesores) =>{
+        this.profesores=profesores;
+      }
+    )
+  }
+
+  
 
   async presentToast(message: string) {
     const toast = await this.toastControler.create({

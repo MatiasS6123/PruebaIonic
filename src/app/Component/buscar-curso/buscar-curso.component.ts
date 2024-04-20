@@ -3,8 +3,10 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastController } from '@ionic/angular';
 import { EstudianteService } from 'src/app/Service/estudiante.service';
 import { GestionCService } from 'src/app/Service/gestion-c.service';
+import { UserService } from 'src/app/Service/user.service';
 import { Estudiante } from 'src/models/Estudiante';
 import { GestionCurso } from 'src/models/gestionC';
+import { User } from 'src/models/User'; // Importar el modelo de usuario
 
 @Component({
   selector: 'app-buscar-curso',
@@ -19,14 +21,18 @@ export class BuscarCursoComponent implements OnInit {
   edicionHabilitada: boolean = false;
   dias: string[] = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'];
   nombresEstudiantes: string[] = [];
+  profesorSeleccionado: User | null = null;
+  // Agregar una propiedad para almacenar los profesores
+  profesores: User[] = [];
 
   constructor(private formBuilder: FormBuilder, private CursoGService: GestionCService, private toastController: ToastController,
-    private estudianteService: EstudianteService) { }
+    private estudianteService: EstudianteService,private userService:UserService) { }
 
   ngOnInit() {
     this.initCursoForm();
     this.initBuscarForm();
     this.obtenerNombresEstudiantes();
+    this.obtenerProfesores(); // Obtener la lista de profesores al inicializar el componente
   }
 
   private initCursoForm(): void {
@@ -62,6 +68,8 @@ export class BuscarCursoComponent implements OnInit {
             dias: curso.dias,
             alumnos: curso.alumno // Asignar los estudiantes seleccionados al formulario
           });
+
+          this.profesorSeleccionado = this.profesores.find(profesor => profesor.nombre === curso.nombreProfesor) || null;
   
           // Habilitar los campos del formulario para edición
           this.cursoForm.disable();
@@ -77,16 +85,46 @@ export class BuscarCursoComponent implements OnInit {
       }
     );
   }
-  
-  
+
+  // Método para obtener la lista de profesores
+  obtenerProfesores() {
+    this.userService.getProfesores().subscribe(
+      (profesores) => {
+        this.profesores = profesores;
+      },
+      (error) => {
+        console.error('Error al obtener profesores:', error);
+      }
+    );
+  }
+
+  // Método para habilitar la edición del formulario
+  habilitarEdicion() {
+    this.cursoForm.enable();
+    this.edicionHabilitada = true; // Habilitar todos los campos del formulario
+  }
+
+  // Método para actualizar el curso
   actualizarCurso() {
     if (this.cursoForm.invalid) {
       this.presentToast('El formulario es inválido. Corrige los campos resaltados.');
       return;
     }
-
-    const cursoActualizado: GestionCurso = this.cursoForm.value;
-    this.CursoGService.updateCurso(cursoActualizado.nombreCurso, cursoActualizado).subscribe(
+  
+    const formData = this.cursoForm.value;
+    console.log('Formulario de curso:', formData); // Log de los datos del formulario
+  
+    const updatedData = {
+      nombreCurso: formData.nombreCurso,
+      cantidadAlumno: formData.cantidadAlumno,
+      nombreProfesor: formData.nombreProfesor.nombre,
+      rutProfesor: formData.nombreProfesor.rut,
+      dias: formData.dias,
+      alumno: formData.alumno
+    };
+    console.log('Datos actualizados:', updatedData); // Log de los datos actualizados
+  
+    this.CursoGService.updateCurso(formData.nombreCurso, updatedData).subscribe(
       (curso: GestionCurso) => {
         this.presentToast('Curso actualizado correctamente:');
         this.cursoEncontrado = curso;
@@ -98,7 +136,9 @@ export class BuscarCursoComponent implements OnInit {
       }
     );
   }
+  
 
+  // Método para eliminar el curso
   eliminarCurso() {
     const nombreCurso = this.cursoForm.get('nombreCurso')?.value;
     if (!nombreCurso) {
@@ -120,11 +160,7 @@ export class BuscarCursoComponent implements OnInit {
     );
   }
 
-  habilitarEdicion() {
-    this.cursoForm.enable();
-    this.edicionHabilitada = true; // Habilitar todos los campos del formulario
-  }
-
+  // Método para mostrar un mensaje de Toast
   async presentToast(message: string) {
     const toast = await this.toastController.create({
       message: message,
@@ -134,6 +170,7 @@ export class BuscarCursoComponent implements OnInit {
     toast.present();
   }
 
+  // Método para obtener los nombres de los estudiantes
   obtenerNombresEstudiantes() {
     this.estudianteService.getEstudiantes().subscribe(
       (estudiantes: Estudiante[]) => {
@@ -144,4 +181,9 @@ export class BuscarCursoComponent implements OnInit {
       }
     );
   }
+
+  getProfesorSeleccionado(): User | null {
+    return this.profesores.find(profesor => profesor.nombre === this.cursoEncontrado?.nombreProfesor) || null;
+  }
+  
 }

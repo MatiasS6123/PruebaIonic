@@ -48,7 +48,10 @@ export class LoginComponent implements OnInit {
       });
     }
         // Redirigir a la página principal o a la página deseada
-        this.router.navigate(['']); // Modifica la ruta según la configuración de tu aplicación
+        this.router.navigate(['/']).then(() => {
+          // Después de redirigir, recarga la página
+          window.location.reload();
+        })
       },
       (error) => {
         // Manejar error de inicio de sesión (por ejemplo, mostrar mensaje de error)
