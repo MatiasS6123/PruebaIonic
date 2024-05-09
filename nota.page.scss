@@ -1,0 +1,16 @@
+
+.nota-item{    border: 1px solid #ccc; /* Ajusta el color y el grosor del borde según tus preferencias */
+    border: 1px solid #ccc; /* Ajusta el color y el grosor del borde según tus preferencias */
+    width: 30px; /* Ajusta el ancho del cuadro de nota según tus preferencias */
+    height: 30px;   
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px; /* */
+    padding: 5px; /* Espacio interno */
+    margin: 5px;
+}
+
+.titulo{
+    padding-left: 25rem ;
+}

@@ -1,0 +1,53 @@
+<ion-header>
+  <ion-toolbar color="secondary">
+    <ion-title>
+      Registro  Notas del curso{{gestionCurso?.nombreCurso}}
+    </ion-title>
+    <ion-buttons  slot="end">
+      <ion-back-button defaultHref="/"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content>
+  
+    <ion-item class="input-item">
+      <ion-label position="stacked" class="input-label">Curso</ion-label>
+      <ion-input type="text" [value]="gestionCurso?.nombreCurso" class="input-field" disabled></ion-input>
+    </ion-item>
+    <ion-item class="input-item">
+      <ion-label position="stacked" class="input-label">Nombre Profesor: </ion-label>
+      <ion-input name="nombreProfesor" type="text" [(ngModel)]="nombreProfesor" [value]="nombreProfesor" class="input-field" disabled></ion-input>
+    </ion-item>
+    
+    <ion-item class="input-item">
+      <ion-label position="stacked" class="input-label">Rut Profesor: </ion-label>
+      <ion-input name="rutProfesor" type="text" [(ngModel)]="rutProfesor" [value]="rutProfesor" class="input-field" disabled></ion-input>
+    </ion-item>
+    
+  
+    
+    <ion-item class="input-item">
+      <ion-label position="stacked" class="input-label">Asignatura</ion-label>
+      <ion-select   name="nombre_asignatura" [(ngModel)]="nota.asignatura" class="input-field">
+        <ion-select-option value="Lenguaje">Lenguaje</ion-select-option>
+          <ion-select-option value="Matematica">Matematica</ion-select-option>
+          <ion-select-option value="Historia">Historia</ion-select-option>
+          <ion-select-option value="Ciencias Sociales">Ciencias Sociales</ion-select-option>
+      </ion-select>
+    </ion-item>
+  
+    <ion-list>
+      <label class="titulo">Notas</label>
+      <ion-item *ngFor="let estudiante of gestionCurso?.alumno" class="input-item">
+        <ion-label class="input-label">{{ estudiante.nombre }}</ion-label>
+        <ng-container *ngFor="let i of notasArray; index as idx">
+          <ion-input min="0" max="7" class="nota-item" type="number" [(ngModel)]="notasEstudiantes[estudiante.rut][idx]" slot="end"></ion-input>
+        </ng-container>
+      </ion-item>
+    </ion-list>
+    
+  
+    <ion-button color="primary" expand="block" (click)="guardarNotas()" class="save-button">Guardar</ion-button>
+</ion-content>
