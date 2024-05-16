@@ -1,0 +1,47 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>
+      Búsqueda de notas
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-back-button defaultHref="/"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-toolbar>
+    <form (ngSubmit)="buscarNota()">
+      <ion-item>
+        <ion-label position="floating">Curso</ion-label>
+        <ion-input type="text" [(ngModel)]="buscarForm.nombreCurso" name="Curso" required></ion-input>
+      </ion-item>
+
+      <ion-button type="submit" expand="block">Buscar Nota</ion-button>
+    </form>
+
+    <ion-item *ngIf="mostrarInformacionNota">
+      <ion-label>Asignatura</ion-label>
+      <ion-input type="text" [(ngModel)]="notaForm.asignatura" name="asignatura" disabled></ion-input>
+    </ion-item>
+
+    <ion-item *ngIf="mostrarInformacionNota">
+      <ion-label>Curso</ion-label>
+      <ion-input type="text" [(ngModel)]="notaForm.nombreCurso" disabled></ion-input>
+    </ion-item>
+
+    <ng-container *ngIf="mostrarInformacionNota">
+      <ion-item *ngFor="let estudiante of notaForm.notas; let i = index">
+        <ion-label>Nombre</ion-label>
+        <ion-input type="text" [(ngModel)]="estudiante.nombre" name="nombre_{{i}}" [disabled]="!edicionHabilitada" required></ion-input>
+        <ion-label>Nota</ion-label>
+        <ion-input type="number" [(ngModel)]="estudiante.nota" name="nota_{{i}}" [disabled]="!edicionHabilitada" required></ion-input>
+      </ion-item>
+    </ng-container>
+
+    <ion-button *ngIf="!edicionHabilitada" expand="block" (click)="habilitarEdicion()">Habilitar Edición</ion-button>
+
+    <ion-button *ngIf="edicionHabilitada" expand="block" (click)="actualizarNota()">Actualizar Nota</ion-button>
+    <ion-button *ngIf="edicionHabilitada" expand="block" (click)="eliminarNota()">Eliminar Nota</ion-button>
+  </ion-toolbar>
+</ion-content>
